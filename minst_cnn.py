@@ -32,21 +32,21 @@ def print_image(image_tensor):
     plt.imshow(image_tensor[0].detach(), cmap="gray")
     plt.show()
 
-#class CustomReLU:
-#    def run(self, input_tensor):
-#        return torch.where(input_tensor > 0, input_tensor, 0)
-#
-#class CustomLeakyReLU:
-#    def run(self, input_tensor):
-#        return torch.where(input_tensor > 0, input_tensor, input_tensor * 0.01)
+class CustomReLU:
+    def run(self, input_tensor):
+        return torch.where(input_tensor > 0, input_tensor, 0)
+
+class CustomLeakyReLU:
+    def run(self, input_tensor):
+        return torch.where(input_tensor > 0, input_tensor, input_tensor * 0.01)
 
 class CNN(nn.Module):
     def __init__(self, num_classes):
         super(CNN, self).__init__()
         self.conv_layer0 = nn.Conv2d(in_channels=1, out_channels=5, kernel_size=5, stride=1, padding=2)
         self.relu = nn.ReLU()
-        #self.custom_relu = CustomReLU()
-        #self.custom_leaky_relu = CustomLeakyReLU()
+        self.custom_relu = CustomReLU()
+        self.custom_leaky_relu = CustomLeakyReLU()
         self.max_pool = nn.MaxPool2d(2) 
         self.conv_layer1 = nn.Conv2d(in_channels=5, out_channels=5, kernel_size=5, stride=1, padding=2)                
         self.out = nn.Linear(5 * 7 * 7, num_classes)
@@ -54,26 +54,26 @@ class CNN(nn.Module):
     #def activation_function(self, x):
     #    return self.relu(x)
     
-    def forward(self, x):
+    def forward(self, x, flag):
         x = self.conv_layer0(x)
 
-        #if flag == 0:
-        #    x = self.relu(x)
-        #elif flag == 1:
-        #    x = self.custom_relu.run(x)
-        #elif flag == 2:
-        #    x = self.custom_leaky_relu.run(x)
+        if flag == 0:
+            x = self.relu(x)
+        elif flag == 1:
+            x = self.custom_relu.run(x)
+        elif flag == 2:
+            x = self.custom_leaky_relu.run(x)
 
         x = self.relu(x)   
         x = self.max_pool(x)
         x = self.conv_layer1(x)
 
-        #if flag == 0:
-        #    x = self.relu(x)
-        #elif flag == 1:
-        #    x = self.custom_relu.run(x)
-        #elif flag == 2:
-        #    x = self.custom_leaky_relu.run(x)
+        if flag == 0:
+            x = self.relu(x)
+        elif flag == 1:
+            x = self.custom_relu.run(x)
+        elif flag == 2:
+            x = self.custom_leaky_relu.run(x)
 
         x = self.relu(x)          
         x = self.max_pool(x)
@@ -105,7 +105,7 @@ def train(num_epochs, model, criterion, optimizer, training_loader):
         running_loss = 0.0
         for i, (images, labels) in enumerate(training_loader):
             optimizer.zero_grad() 
-            output = model.forward(images)              
+            output = model.forward(images, 1)
             loss = criterion(output, labels)
             running_loss += loss.item()
             
@@ -126,7 +126,7 @@ def test(model, criterion, testing_loader):
        
     for i, (images, labels) in enumerate(testing_loader):
                 
-        output = model.forward(images)
+        output = model.forward(images, 1)
         loss = criterion(output, labels)
         running_loss += loss.item()
         
@@ -157,7 +157,7 @@ train(num_epochs, cnn, criterion, optimizer, training_loader)
 test(cnn, criterion, testing_loader)
 
 images, labels = next(iter(testing_loader))
-output = cnn.forward(images)
+output = cnn.forward(images, 1)
 _, predictions = torch.max(output.data, 1)
 
 print("\nLabels:      " + str(labels))
