@@ -57,12 +57,12 @@ class CNN(nn.Module):
     def forward(self, x):
         x = self.conv_layer0(x)
 
-        if flag == 0:
-            x = self.relu(x)
-        elif flag == 1:
-            x = self.custom_relu.run(x)
-        elif flag == 2:
-            x = self.custom_leaky_relu.run(x)
+        #if flag == 0:
+        #    x = self.relu(x)
+        #elif flag == 1:
+        #    x = self.custom_relu.run(x)
+        #elif flag == 2:
+        #    x = self.custom_leaky_relu.run(x)
 
         x = self.relu(x)   
         x = self.max_pool(x)
@@ -96,8 +96,6 @@ class CNN(nn.Module):
 
 #    def activation_function(self, x):
 #        return self.custom_leaky_relu.run(x)
-
-# some test
 
 def train(num_epochs, model, criterion, optimizer, training_loader):
     
