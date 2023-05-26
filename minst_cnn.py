@@ -87,7 +87,7 @@ class CNN(nn.Module):
 #        self.custom_relu = CustomReLU()
 
 #    def activation_function(self, x):
-#        return self.custom_relu.run()
+#        return self.custom_relu.run(x)
 
 #class CustomLeakyCNN(CNN):
 #    def __init__(self, num_classes):
@@ -95,7 +95,7 @@ class CNN(nn.Module):
 #        self.custom_leaky_relu = CustomLeakyReLU()
 
 #    def activation_function(self, x):
-#        return self.custom_leaky_relu.run()
+#        return self.custom_leaky_relu.run(x)
 
 def train(num_epochs, model, criterion, optimizer, training_loader):
     
